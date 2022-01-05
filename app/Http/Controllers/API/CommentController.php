@@ -65,7 +65,7 @@ class CommentController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
+     *e
      * @param  \App\Models\Post  $post
      * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Http\Response
