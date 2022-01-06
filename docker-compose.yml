@@ -5,10 +5,10 @@ services:
         build:
             context: .
             dockerfile: ./docker/php/Dockerfile
-        image: 'shouts.dev/laravel'
-        container_name: shouts-laravel-app
+        image: 'task-image'
+        container_name: task-php
         ports:
-            - "80:80"
+            - "8081:80"
         volumes:
             - ./:/var/www/html
         networks:
@@ -17,21 +17,20 @@ services:
             - mysql
     mysql:
         image: 'mariadb:latest'
-        container_name: shouts-laravel-db
+        container_name: task-db
         restart: unless-stopped
         ports:
-            - "3306:3306"
+            - "3307:3306"
         environment:
             MYSQL_DATABASE: ${DB_DATABASE}
             MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
             MYSQL_PASSWORD: ${DB_PASSWORD}
             MYSQL_USER: ${DB_USERNAME}
-            MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+            SERVICE_NAME: mysql
         volumes:
             - ./database/dbdata:/var/lib/mysql
         networks:
             - laravel-shouts
-
 networks:
     laravel-shouts:
         driver: bridge
