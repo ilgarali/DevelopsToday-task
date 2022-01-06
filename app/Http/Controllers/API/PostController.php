@@ -7,69 +7,65 @@ use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
+use Illuminate\Http\Response;
 
 class PostController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index()
+    public function index(): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
         $posts = Post::latest()->paginate(20);
         return PostResource::collection($posts);
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StorePostRequest  $request
-     * @return \Illuminate\Http\Response
+     * @param StorePostRequest $request
+     * @return PostResource
      */
-    public function store(StorePostRequest $request)
+    public function store(StorePostRequest $request): PostResource
     {
         $post = Post::create($request->validated());
         return new PostResource($post);
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Post  $post
-     * @return \Illuminate\Http\Response
+     * @param Post $post
+     * @return PostResource
      */
-    public function show(Post $post)
+    public function show(Post $post): PostResource
     {
         return new PostResource($post);
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdatePostRequest  $request
-     * @param  \App\Models\Post  $post
-     * @return \Illuminate\Http\Response
+     * @param UpdatePostRequest $request
+     * @param Post $post
+     * @return PostResource
      */
-    public function update(UpdatePostRequest $request, Post $post)
+    public function update(UpdatePostRequest $request, Post $post): PostResource
     {
         $post->update($request->validated());
         return new PostResource($post);
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Post  $post
-     * @return \Illuminate\Http\Response
+     * @param Post $post
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Post $post)
+    public function destroy(Post $post): \Illuminate\Http\JsonResponse
     {
-         $post->delete();
-         return response()->json(['success'=>true]);
+        $post->delete();
+        return response()->json(['success' => true]);
     }
 
-    public function upvote(Post $post){
+    /**
+     * @param Post $post
+     * @return PostResource
+     */
+    public function upvote(Post $post): PostResource
+    {
         $current = $post->upvote;
         $post->upvote = $current + 1;
         $post->save();

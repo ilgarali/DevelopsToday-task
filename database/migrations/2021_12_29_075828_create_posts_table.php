@@ -18,7 +18,7 @@ class CreatePostsTable extends Migration
             $table->string('title');
             $table->string('link');
             $table->string('author_name');
-            $table->integer('upvote')->nullable();
+            $table->integer('upvote')->default(0);
 
             $table->timestamps();
         });

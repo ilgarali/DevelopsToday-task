@@ -7,73 +7,62 @@ use App\Http\Requests\CommentRequest;
 use App\Http\Resources\CommentResource;
 use App\Models\Comment;
 use App\Models\Post;
-use http\Env\Response;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Symfony\Component\HttpFoundation\Response;
 
 class CommentController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @param  \App\Models\Post  $post
-     * @return \Illuminate\Http\Response
+     * @param Post $post
+     * @return AnonymousResourceCollection
      */
-    public function index(Post $post)
+    public function index(Post $post): AnonymousResourceCollection
     {
         return CommentResource::collection($post->comments()->paginate(20));
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Post  $post
-     * @return \Illuminate\Http\Response
+     * @param CommentRequest $request
+     * @param Post $post
+     * @return CommentResource
      */
-    public function store(CommentRequest $request, Post $post)
+    public function store(CommentRequest $request, Post $post): CommentResource
     {
         $comment = $post->comments()->create($request->validated());
         return new CommentResource($comment);
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Post  $post
-     * @param  \App\Models\Comment  $comment
-     * @return \Illuminate\Http\Response
+     * @param Post $post
+     * @param Comment $comment
+     * @return CommentResource
      */
-    public function show(Post $post, Comment $comment)
+    public function show(Post $post, Comment $comment): CommentResource
     {
         return new CommentResource($comment);
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Post  $post
-     * @param  \App\Models\Comment  $comment
-     * @return \Illuminate\Http\Response
+     * @param CommentRequest $request
+     * @param Post $post
+     * @param Comment $comment
+     * @return CommentResource
      */
-    public function update(CommentRequest $request, Post $post, Comment $comment)
+    public function update(CommentRequest $request, Post $post, Comment $comment): CommentResource
     {
         $comment->update($request->validated());
         return new CommentResource($comment);
-
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Post  $post
-     * @param  \App\Models\Comment  $comment
-     * @return \Illuminate\Http\Response
+     * @param Post $post
+     * @param Comment $comment
+     * @return JsonResponse
      */
-    public function destroy(Post $post, Comment $comment)
+    public function destroy(Post $post, Comment $comment): JsonResponse
     {
         $comment->delete();
-        return response()->json([],\Symfony\Component\HttpFoundation\Response::HTTP_NO_CONTENT);
-
+        return response()->json([], Response::HTTP_NO_CONTENT);
     }
 }
